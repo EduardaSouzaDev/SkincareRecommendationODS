@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
 from backend.models import RecommendationResponse, RecommendationRequest
-from backend.recommender import recommend
+from backend.recommender import recommend_by_ingredients
 
 app = FastAPI(
     title="Skincare Recommendation API ",
@@ -18,5 +18,13 @@ def health() -> dict:
 @app.post("/recommend", response_model=RecommendationResponse)
 def recommend(request: RecommendationRequest): 
     '''Endpoint de recomendação por ingredientes'''
-    results = recommend(request.ingredient, request.top_n)
-    return{"results": results}
+    
+    results_df = recommend_by_ingredients(request.ingredient)
+
+    if isinstance(results_df, str):  # caso retorne mensagem de erro
+        return {"error": results_df}
+    
+    # Converte DataFrame para lista de dicts para JSON
+    results = results_df.to_dict(orient="records")
+    
+    return {"results": results}
