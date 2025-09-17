@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-data = pd.read_csv("data/cosmetic.csv")
+data = pd.read_csv("backend/data/cosmetic.csv")
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
