@@ -12,9 +12,7 @@ X = vectorizer.fit_transform(data['ingredients'].fillna(""))
 similaridade = cosine_similarity(X)
 similaridade = pd.DataFrame(similaridade, index=data['name'], columns=data['name'])
 
-print(similaridade.index[:10])
-
-def recommend_by_ingredients(nome_produto, top_n=7):
+def recommend_by_ingredients(nome_produto, top_n=10):
 
     if nome_produto not in similaridade.index:
         return "Produto não encontrado no dataset."
@@ -26,4 +24,18 @@ def recommend_by_ingredients(nome_produto, top_n=7):
     top_produtos = similares.drop(nome_produto).head(top_n)
 
     # Retornar informações básicas
-    return data[data['name'].isin(top_produtos.index)][['name', 'brand', 'ingredients']]
+    produto_buscado = data[data['name'] == nome_produto][['name', 'brand', 'ingredients', 'price']]
+    
+    produtos_similares = data[data['name'].isin(top_produtos.index)][['name', 'brand', 'ingredients','price']]
+
+    # Junta produto buscado + similares
+    resultado_final = pd.concat([produto_buscado, produtos_similares], ignore_index=True)
+
+    dolar_para_real = 5.3  
+
+    # Converter e formatar
+    resultado_final['price'] = resultado_final['price'].apply(
+        lambda x: f"R$ {x * dolar_para_real:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    )
+
+    return resultado_final
