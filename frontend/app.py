@@ -16,7 +16,6 @@ if "results" not in st.session_state:
     st.session_state.results = []
 if "current_product" not in st.session_state:
     st.session_state.current_product = None
-<<<<<<< HEAD
 
 # --- Página Inicial (Busca) ---
 if st.session_state.page == "home":
@@ -26,14 +25,12 @@ if st.session_state.page == "home":
 if "ingredient" not in st.session_state:
     st.session_state.ingredient = ""
 
-
 # --- Container fixo no topo (título + busca) ---
 header_container = st.container()
 with header_container:
     st.markdown("<h1 style='text-align:center; color:#FF69B4;'>💆🏻‍♀️ Sistema de Recomendação Skincare 🫧</h1>", unsafe_allow_html=True)
     ingredient_input = st.text_input("Digite o produto:", value = None)
     if st.button("Buscar"):
-<<<<<<< HEAD
         # 1️⃣ Buscar dados do produto digitado
         payload_produto = {"ingredient": ingredient, "only_self": True}  # Flag para retornar apenas o produto buscado
         response_produto = requests.post(API_URL, json=payload_produto)
@@ -57,7 +54,6 @@ with header_container:
                     # 3️⃣ Monta a lista final: produto buscado + similares
                     st.session_state.results = [produto_buscado] + similares
                     st.session_state.page = "lista"
-=======
         st.session_state.ingredient = ingredient_input
         #st.session_state.ingredient = ""
         print(st.session_state.ingredient)
@@ -83,14 +79,13 @@ with header_container:
                     st.session_state.page = "lista"
                    # del st.session_state.ingredient 
                     print(st.session_state.ingredient )
->>>>>>> frotend-gustavo
                     st.rerun()
                 else:
                     st.error(f"Erro ao buscar produtos semelhantes: {response_similares.status_code}")
         else:
             st.error(f"Erro ao buscar produto: {response_produto.status_code}")
-<<<<<<< HEAD
-=======
+
+
 # --- Página Inicial / Lista de Produtos ---
 if st.session_state.page == "home":
     st.write("Digite um produto acima e clique em Buscar para ver os resultados.")
@@ -112,7 +107,6 @@ elif st.session_state.page == "lista":
                 st.session_state.current_product = p
                 st.session_state.page = "produto"
                 st.rerun()
->>>>>>> frotend-gustavo
 
 # --- Lista de Produtos ---
 elif st.session_state.page == "lista":
@@ -130,7 +124,6 @@ elif st.session_state.page == "lista":
 elif st.session_state.page == "produto":
     produto = st.session_state.current_product
     if produto:
-<<<<<<< HEAD
         st.header(f"🧴 {produto['name']}")
         st.write(f"**Marca:** {produto.get('brand', 'Desconhecida')}")
         st.write(f"**Ingredientes:** {produto.get('ingredients', 'Não informado')}")
@@ -152,7 +145,7 @@ elif st.session_state.page == "produto":
                     st.session_state.current_product = s
                     st.session_state.page = "produto"
                     st.rerun()
-=======
+
         st.markdown(f"""
         <div style='background-color:#FFF0F5; padding:15px; border-radius:15px;'>
             <h2>{produto['name']}</h2>
@@ -185,7 +178,6 @@ elif st.session_state.page == "produto":
                         st.session_state.current_product = s
                         st.session_state.page = "produto"
                         st.rerun()
->>>>>>> frotend-gustavo
 
     if st.button("Voltar para lista"):
         st.session_state.page = "lista"
