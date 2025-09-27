@@ -10,7 +10,7 @@ if "page" not in st.session_state:
     st.session_state.page = "home"
     
 
-# Armazenar resultados da API
+# Armazenar resultados da APIThe Water Cream
 if "results" not in st.session_state:
     st.session_state.results = None
 
