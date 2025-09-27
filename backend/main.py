@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from backend.models import RecommendationResponse, RecommendationRequest
 from backend.recommender import recommend_by_ingredients
 
+
+
 app = FastAPI(
     title="Skincare Recommendation API ",
     description="Serve recomendação de produtos de skincare da Sephora.",
