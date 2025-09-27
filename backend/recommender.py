@@ -14,7 +14,7 @@ similaridade = pd.DataFrame(similaridade, index=data['name'], columns=data['name
 
 print(similaridade.index[:10])
 
-def recommend_by_ingredients(nome_produto, top_n=7):
+def recommend_by_ingredients(nome_produto, top_n=10):
 
     if nome_produto not in similaridade.index:
         return "Produto não encontrado no dataset."
@@ -26,4 +26,11 @@ def recommend_by_ingredients(nome_produto, top_n=7):
     top_produtos = similares.drop(nome_produto).head(top_n)
 
     # Retornar informações básicas
-    return data[data['name'].isin(top_produtos.index)][['name', 'brand', 'ingredients']]
+    produto_buscado = data[data['name'] == nome_produto][['name', 'brand', 'ingredients']]
+    
+    produtos_similares = data[data['name'].isin(top_produtos.index)][['name', 'brand', 'ingredients']]
+
+    # Junta produto buscado + similares
+    resultado_final = pd.concat([produto_buscado, produtos_similares], ignore_index=True)
+
+    return resultado_final
