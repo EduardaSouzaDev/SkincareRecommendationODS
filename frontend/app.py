@@ -6,6 +6,12 @@ API_URL = "http://127.0.0.1:8000/recommend"
 # --- Controle de estado ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
+<<<<<<< HEAD
+=======
+    
+
+# Armazenar resultados da APIThe Water Cream
+>>>>>>> af74b2e76d38fc9052ae9e939c37a1c5b1a22f58
 if "results" not in st.session_state:
     st.session_state.results = []
 if "current_product" not in st.session_state:
