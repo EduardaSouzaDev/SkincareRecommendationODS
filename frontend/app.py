@@ -42,8 +42,8 @@ with header_container:
                     similares = [s for s in similares if s["name"] != produto_buscado["name"]]
                     st.session_state.results = [produto_buscado] + similares
                     st.session_state.page = "lista"
-                   # del st.session_state.ingredient 
-                    print(st.session_state.ingredient )
+                   # del st.session_state.ingredient
+                    print(st.session_state.ingredient)
                     st.rerun()
                 else:
                     st.error(f"Erro ao buscar produtos semelhantes: {response_similares.status_code}")
