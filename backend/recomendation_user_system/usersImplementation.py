@@ -41,6 +41,7 @@ def fill_csv():
             add_ava = pd.DataFrame(avaliation)
             df_avaliation = pd.concat([df_avaliation, add_ava], ignore_index=True)
         print(df_avaliation)
+        df_avaliation = df_avaliation.drop_duplicates(inplace=False)
         df_avaliation.to_csv("backend/data/more_ava.csv", index=False)
         avaliation = []
         add_ava = add_ava[0:0]  
