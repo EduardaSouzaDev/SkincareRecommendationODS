@@ -10,45 +10,53 @@ if "results" not in st.session_state:
     st.session_state.results = []
 if "current_product" not in st.session_state:
     st.session_state.current_product = None
-if "ingredient" not in st.session_state:
-    st.session_state.ingredient = ""
+if "ingredient_input" not in st.session_state:
+    st.session_state.ingredient_input = ""
 
 # --- Container fixo no topo (título + busca) ---
-header_container = st.container()
-with header_container:
-    st.markdown("<h1 style='text-align:center; color:#FF69B4;'>💆🏻‍♀️ Sistema de Recomendação Skincare 🫧</h1>", unsafe_allow_html=True)
-    ingredient_input = st.text_input("Digite o produto:", value = None)
-    if st.button("Buscar"):
-        st.session_state.ingredient = ingredient_input
-        #st.session_state.ingredient = ""
-        print(st.session_state.ingredient)
+st.markdown("<h1 style='text-align:center; color:#FF69B4;'>💆🏻‍♀️ Sistema de Recomendação Skincare 🫧</h1>", unsafe_allow_html=True)
+
+# --- Barra de pesquisa ---
+ingredient_input = st.text_input("Digite o produto:", value=st.session_state.ingredient_input, key="ingredient_input")
+
+# Botão de busca
+if st.button("Buscar"):
+    ingredient = st.session_state.ingredient_input.strip()
+
+    if ingredient == "":
+        st.warning("Digite algum produto antes de buscar.")
+    else:
+        # Limpa a barra **antes do rerun**, após capturar o valor
+        st.session_state.ingredient_input = ""
+
         # Busca o produto buscado
-        payload_produto = {"ingredient": ingredient_input, "only_self": True}
+        payload_produto = {"ingredient": ingredient, "only_self": True}
         response_produto = requests.post(API_URL, json=payload_produto)
+
         if response_produto.status_code == 200:
             produto_buscado_list = response_produto.json().get("results", [])
             if not produto_buscado_list:
                 st.warning("Produto não encontrado.")
                 st.session_state.page = "home"
+                st.rerun()
             else:
                 produto_buscado = produto_buscado_list[0]
 
                 # Busca produtos semelhantes
-                payload_similares = {"ingredient": ingredient_input}
+                payload_similares = {"ingredient": ingredient}
                 response_similares = requests.post(API_URL, json=payload_similares)
                 if response_similares.status_code == 200:
                     similares = response_similares.json().get("results", [])
-                    # Remove duplicata do produto buscado
                     similares = [s for s in similares if s["name"] != produto_buscado["name"]]
                     st.session_state.results = [produto_buscado] + similares
                     st.session_state.page = "lista"
-                   # del st.session_state.ingredient 
-                    print(st.session_state.ingredient )
                     st.rerun()
                 else:
                     st.error(f"Erro ao buscar produtos semelhantes: {response_similares.status_code}")
         else:
             st.error(f"Erro ao buscar produto: {response_produto.status_code}")
+
+
 # --- Página Inicial / Lista de Produtos ---
 if st.session_state.page == "home":
     st.write("Digite um produto acima e clique em Buscar para ver os resultados.")
