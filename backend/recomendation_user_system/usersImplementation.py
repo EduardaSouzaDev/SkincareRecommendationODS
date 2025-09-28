@@ -43,7 +43,7 @@ def fill_csv():
             df_update = pd.concat([df_users, add_ava], ignore_index = True)
             #print(add_ava)
             df_update.to_csv("backend/data/usersAvaliation.csv", index=False)
-            print(df_users)
+            print(df_update)
         avaliation = {}
         #df_users["cosmetic"] = cosmetic
         #cosmetic = []
