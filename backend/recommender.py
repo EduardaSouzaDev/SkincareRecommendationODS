@@ -41,6 +41,7 @@ def recommend_by_ingredients(nome_produto, top_n=10):
 
     return resultado_final
 
+
 def manhattan(rating1, rating2):
     distance = 0
     commonRatings = False  # Flag para saber se os dois usuários têm músicas em comum
