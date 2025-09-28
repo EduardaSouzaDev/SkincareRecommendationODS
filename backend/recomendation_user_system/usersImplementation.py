@@ -12,9 +12,10 @@ MAX = 6
 MIN = 0
 COS_MIN = 1
 COS_MAX = 1472
+numberofusers = 18
 
 def generate_new_ratings():
-    rating = np.random.randint(low=MIN, high=MAX, size=len(df_users))
+    rating = np.random.randint(low=MIN, high=MAX, size= numberofusers)
     df_users["rate"] = rating
 
 def generate_number_of_avaliation():
@@ -22,16 +23,16 @@ def generate_number_of_avaliation():
 
 def fill_csv():
     cosmetic = []
-    cosmetics_id = np.random.randint(low=COS_MIN, high=COS_MAX, size=(len(df_users)))
+    cosmetics_id = np.random.randint(low=COS_MIN, high=COS_MAX, size= numberofusers)
     
-    for i in range(MIN, len(df_users["id"])+1):
-        variant = np.random.randint(low = 1, high = 11, size = 18)   
+    for i in range(MIN, numberofusers+1):
+        variant = np.random.randint(low = 1, high = 11, size = numberofusers)   
     
     for j in variant:
-        position = rd.randint(0, 18)
+        position = rd.randint(0, numberofusers)
         for k in range(0, j):#faz repetir para cada uma das posições do CSV
             id = rd.randint(COS_MIN, COS_MAX)
-            avaliation = {"id" : [position], "name" : [df_ingredients["name"][id]], "rate" : [rd.randint(COS_MIN, MAX)]} #ok
+            avaliation = {"name" : [df_users["name"][j]], "cosmetic" : [df_ingredients["name"][id]], "rate" : [rd.randint(COS_MIN, 5)], "id" : [position]} #ok
             #for id in cosmetics_id:
                 #cosmetic.append(df_ingredients["name"][id]) #cria uma lista de cosmeticos
             #df_users.iloc[j, "cosmetic"] = cosmetic
@@ -39,12 +40,15 @@ def fill_csv():
             #print(df_users["name"][j])
             #print(f"product: {avaliation}") - ok
             add_ava = pd.DataFrame(avaliation)
-        print(f"{add_ava}")
+            df_update = pd.concat([df_users, add_ava], ignore_index = True)
+            #print(add_ava)
+            df_update.to_csv("backend/data/usersAvaliation.csv", index=False)
+            print(df_users)
         avaliation = {}
         #df_users["cosmetic"] = cosmetic
         #cosmetic = []
     #print(df_users)
-    generate_new_ratings()
+    #generate_new_ratings()
     #df_users.to_csv("backend/data/usersAvaliation.csv", index=False)     
     
 
