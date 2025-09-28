@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 data = pd.read_csv("backend/data/cosmetic.csv")
+df_user = pd.read_csv("backend/data/more_ava.csv")
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
@@ -12,9 +13,7 @@ X = vectorizer.fit_transform(data['ingredients'].fillna(""))
 similaridade = cosine_similarity(X)
 similaridade = pd.DataFrame(similaridade, index=data['name'], columns=data['name'])
 
-print(similaridade.index[:10])
-
-def recommend_by_ingredients(nome_produto, top_n=7):
+def recommend_by_ingredients(nome_produto, top_n=10):
 
     if nome_produto not in similaridade.index:
         return "Produto não encontrado no dataset."
@@ -26,4 +25,62 @@ def recommend_by_ingredients(nome_produto, top_n=7):
     top_produtos = similares.drop(nome_produto).head(top_n)
 
     # Retornar informações básicas
-    return data[data['name'].isin(top_produtos.index)][['name', 'brand', 'ingredients']]
+    produto_buscado = data[data['name'] == nome_produto][['name', 'brand', 'ingredients', 'price']]
+    
+    produtos_similares = data[data['name'].isin(top_produtos.index)][['name', 'brand', 'ingredients','price']]
+
+    # Junta produto buscado + similares
+    resultado_final = pd.concat([produto_buscado, produtos_similares], ignore_index=True)
+
+    dolar_para_real = 5.3  
+
+    # Converter e formatar
+    resultado_final['price'] = resultado_final['price'].apply(
+        lambda x: f"R$ {x * dolar_para_real:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    )
+
+    return resultado_final
+
+
+def manhattan(rating1, rating2):
+    distance = 0
+    commonRatings = False  # Flag para saber se os dois usuários têm músicas em comum
+
+    for key in rating1:
+        if key in rating2:
+            distance += abs(rating1[key] - rating2[key])  # Soma a diferença absoluta das notas
+            commonRatings = True
+
+    if commonRatings:
+        return distance  # Retorna a distância total
+    else:
+        return -1  # Retorna -1 se não houver músicas em comum
+
+def computeNearestNeighbor(username, users):
+    distances = []  # Lista de tuplas (distância, nome_do_usuário)
+
+    for user in users:
+        if user != username:
+            distance = manhattan(users[user], users[username])  # Calcula a distância
+            distances.append((distance, user))
+
+    distances.sort()  # Ordena pela menor distância (mais semelhante primeiro)
+    return distances
+
+def recommend(username, users):
+    # Chama a função anterior para encontrar o usuário mais próximo e pega apenas o nome desse usuário.
+    nearest = computeNearestNeighbor(username, users)[0][1]  # Nome do usuário mais próximo
+    recommendations = []  # Lista de recomendações
+
+    # Armazena as avaliações do vizinho mais próximo e do usuário atual em variáveis separadas
+    neighborRatings = users[nearest]  # Avaliações do vizinho
+    userRatings = users[username]  # Avaliações do usuário
+
+    # Para cada item avaliado pelo vizinho, verifica se o usuário ainda não avaliou.
+    # Se for o caso, adiciona esse item à lista de recomendações.
+    for artist in neighborRatings:
+        if artist not in userRatings:
+            recommendations.append((artist, neighborRatings[artist]))  # Adiciona recomendação
+
+    # Ordena por maior pontuação do vizinho
+    return sorted(recommendations, key=lambda artistTuple: artistTuple[1], reverse=True)

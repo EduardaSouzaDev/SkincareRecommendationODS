@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from backend.models import RecommendationResponse, RecommendationRequest
 from backend.recommender import recommend_by_ingredients
+import sys
 
-
+sys.stdout.reconfigure(encoding="utf-8")
 
 app = FastAPI(
     title="Skincare Recommendation API ",
