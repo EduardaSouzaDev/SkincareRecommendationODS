@@ -31,7 +31,7 @@ def fill_csv():
     #debug print(df_users)
     df_users.to_csv("backend/data/usersAvaliation.csv", index=False)
 
-for i in range(COS_MIN, len(df_users)):
+for i in range(MIN, len(df_users)):
     df_users.loc[i, "id"] = i
     df_users.to_csv("backend/data/usersAvaliation.csv", index=False)
 
