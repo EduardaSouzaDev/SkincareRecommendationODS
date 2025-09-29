@@ -69,6 +69,7 @@ def manhattan(rating1, rating2):
 def computeNearestNeighbor(username):
     distances = []  # Lista de tuplas (distância, nome_do_usuário)
 
+
     for user in df_users:
         if user != username:
             distance = manhattan(users[user], users[username])  # Calcula a distância
@@ -97,15 +98,14 @@ def recommend(username, users):
 
 # Função que monta a interface do aplicativo no Streamlit
 def recommend_app():
-    global users
     st.title("Sistema de Recomendação Colaborativo de Cosméticos")  # Título do app
 
     username = st.text_input("Digite o nome de usuário:")  # Campo de entrada para o nome
-    splitted_username = re.split("[.-,/\' %]", username)
-    print(splitted_username)
+    #splitted_username = re.split("[.-,/\' %]", username)
+    #print(splitted_username)
     if st.button("Recomendar produtos"):  # Botão para gerar recomendação
-        if username in users["name"]:
-            recommendations = recommend(username, users["name"])  # Gera recomendações
+        if username in users:
+            recommendations = recommend(username, users)  # Gera recomendações
             st.write(f"Recomendações para {username}:")
             for recommendation in recommendations:
                 st.write(f"{recommendation[0]} - Pontuação: {recommendation[1]}")  # Exibe recomendações
