@@ -1,9 +1,12 @@
 import pandas as pd
+import streamlit as st
+import re
+from math import sqrt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 data = pd.read_csv("backend/data/cosmetic.csv")
-df_user = pd.read_csv("backend/data/more_ava.csv")
+users = pd.read_csv("backend/data/more_ava.csv")
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
@@ -59,7 +62,7 @@ def manhattan(rating1, rating2):
 def computeNearestNeighbor(username, users):
     distances = []  # Lista de tuplas (distância, nome_do_usuário)
 
-    for user in users:
+    for user in users["name"]:
         if user != username:
             distance = manhattan(users[user], users[username])  # Calcula a distância
             distances.append((distance, user))
@@ -69,7 +72,7 @@ def computeNearestNeighbor(username, users):
 
 def recommend(username, users):
     # Chama a função anterior para encontrar o usuário mais próximo e pega apenas o nome desse usuário.
-    nearest = computeNearestNeighbor(username, users)[0][1]  # Nome do usuário mais próximo
+    nearest = computeNearestNeighbor(username, users)#[0][1]  # Nome do usuário mais próximo
     recommendations = []  # Lista de recomendações
 
     # Armazena as avaliações do vizinho mais próximo e do usuário atual em variáveis separadas
@@ -84,3 +87,20 @@ def recommend(username, users):
 
     # Ordena por maior pontuação do vizinho
     return sorted(recommendations, key=lambda artistTuple: artistTuple[1], reverse=True)
+
+# Função que monta a interface do aplicativo no Streamlit
+def recommend_app():
+    global users
+    st.title("Sistema de Recomendação Colaborativo de Cosméticos")  # Título do app
+
+    username = st.text_input("Digite o nome de usuário:")  # Campo de entrada para o nome
+    splitted_username = re.split("[.-,/\' %]", username)
+    print(splitted_username)
+    if st.button("Recomendar produtos"):  # Botão para gerar recomendação
+        if username in users["name"]:
+            recommendations = recommend(username, users["name"])  # Gera recomendações
+            st.write(f"Recomendações para {username}:")
+            for recommendation in recommendations:
+                st.write(f"{recommendation[0]} - Pontuação: {recommendation[1]}")  # Exibe recomendações
+        else:
+            st.write("Nome de usuário não encontrado. Por favor, insira um nome de usuário válido.")  # Mensagem de erro
