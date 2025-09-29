@@ -12,7 +12,6 @@ if "current_product" not in st.session_state:
     st.session_state.current_product = None
 if "ingredient" not in st.session_state:
     st.session_state.ingredient = ""
-
 # --- Container fixo no topo (título + busca) ---
 header_container = st.container()
 with header_container:

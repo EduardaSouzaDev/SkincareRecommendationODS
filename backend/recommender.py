@@ -12,7 +12,7 @@ X = vectorizer.fit_transform(data['ingredients'].fillna(""))
 similaridade = cosine_similarity(X)
 similaridade = pd.DataFrame(similaridade, index=data['name'], columns=data['name'])
 
-def recommend_by_ingredients(nome_produto, top_n=10):
+def recommend_by_ingredients(nome_produto, top_n=3):
 
     if nome_produto not in similaridade.index:
         return "Produto não encontrado no dataset."
