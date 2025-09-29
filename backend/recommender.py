@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 data = pd.read_csv("backend/data/cosmetic.csv")
-users = pd.read_csv("backend/data/more_ava.csv")
+df_users = pd.read_csv("backend/data/more_ava.csv")
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
@@ -45,7 +45,7 @@ def recommend_by_ingredients(nome_produto, top_n=10):
     return resultado_final
 
 
-def manhattan(rating1, rating2):
+def manhattan(username):
     distance = 0
     commonRatings = False  # Flag para saber se os dois usuários têm músicas em comum
 

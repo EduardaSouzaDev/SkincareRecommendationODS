@@ -52,6 +52,8 @@ def fill_csv():
         df_users.loc[i, "id"] = i
         df_users.to_csv("backend/data/usersAvaliation.csv", index=False)'''
 
-#print(df_users)
+def filter_items(key_word):
 
-fill_csv()
+    filter = df_avaliation["cosmetic"].str.contains(key_word, case=False, na=False)
+    #print(df_avaliation[filtro])
+    return filter
