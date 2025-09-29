@@ -1,5 +1,5 @@
 name,cosmetic,rate,id
-Veronica,High Potency Classics: Firming Eye Lift,3,19
+Veronica,High Potency Classics: Firming Eye Lift,3,0
 Marta,After-Sun Mask - Watermelon,4,1
 Gabi,The Broad Spectrum SPF 50 UV Protecting Fluid,3,2
 Fatima,Bye Bye Breakout™ Full-Coverage Concealer,4,3
@@ -18,3 +18,23 @@ Jessica,Bienfait Teinté Beauty Balm Sunscreen Broad Spectrum SPF 30,1,15
 Joana,Gel Mask Hydrating & Quenching,1,16
 Maria,Water Fuse Hydro Soothe Eye Gel,4,17
 Jamilis,Quench Hydrating Face Serum,4,18
+Bia,Perfectionist Pro Rapid Firm + Lift Treatment,2,3
+Sheila,Watermelon Glow Sleeping Mask Mini,2,18
+Sheila,Transforming Walnut Scrub,5,9
+Vitoria,Foaming Sonic Facial Soap,1,13
+Marta,Pore Master Patch,4,5
+Jung Kim,Hydra Zen Masque Anti-Stress Moisturizing Night Face Mask,5,9
+Gabi,Advanced Active Radiance® Serum,4,13
+Vitoria,Wrinkle Warrior® Eye Gel Visible Dark Circle Eraser,1,11
+['Sheila'],['Umbra Tinte™ Physical Daily Defense Broad Spectrum Sunscreen SPF 30'],[1],[0]
+['Sheila'],['Resurgence® Age–Balancing Moisture Broad Spectrum SPF 30'],[3],[0]
+['Sheila'],['Capture Youth Age-Delay Advanced Crème'],[2],[0]
+['Sheila'],['Ultra Facial Toner'],[5],[0]
+['Sheila'],['Capture Totale Multi-Perfection Creme Refill'],[2],[0]
+['Sheila'],['Essential Energy Eye Definer'],[4],[0]
+['Sheila'],['Hydra Sebum Control Essence'],[4],[0]
+['Sheila'],['Sleeping Mask - Pearl'],[4],[0]
+['Vitoria'],['Luminizing Pink Charcoal Mask'],[3],[14]
+['Vitoria'],['Instant Mineral SPF 45'],[2],[14]
+['Vitoria'],['Pep-Start Pout Restoring Night Mask'],[1],[14]
+['Vitoria'],['Ferulic + Retinol Anti-Aging Moisturizer'],[3],[14]

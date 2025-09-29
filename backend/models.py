@@ -8,5 +8,3 @@ class RecommendationRequest(BaseModel):
 class RecommendationResponse(BaseModel):
     results: Optional[List[Dict[str, Any]]] = None
     error: Optional[str] = None
-
-    #mudando só de teste
