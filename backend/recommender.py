@@ -66,10 +66,10 @@ def manhattan(rating1, rating2):
     else:
         return -1  # Retorna -1 se não houver músicas em comum
 
-def computeNearestNeighbor(username, users):
+def computeNearestNeighbor(username):
     distances = []  # Lista de tuplas (distância, nome_do_usuário)
 
-    for user in users["name"]:
+    for user in df_users:
         if user != username:
             distance = manhattan(users[user], users[username])  # Calcula a distância
             distances.append((distance, user))
