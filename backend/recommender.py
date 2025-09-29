@@ -1,11 +1,18 @@
 import pandas as pd
+import numpy as np
 import streamlit as st
 from math import sqrt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 data = pd.read_csv("backend/data/cosmetic.csv")
-df_users = pd.read_csv("backend/data/more_ava.csv")
+
+
+def load_user_data():
+    return pd.read_csv(r"C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv")
+
+df_users = load_user_data()
+
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
@@ -15,7 +22,7 @@ X = vectorizer.fit_transform(data['ingredients'].fillna(""))
 similaridade = cosine_similarity(X)
 similaridade = pd.DataFrame(similaridade, index=data['name'], columns=data['name'])
 
-def recommend_by_ingredients(nome_produto, top_n=10):
+def recommend_by_ingredients(nome_produto, top_n=3):
 
     if nome_produto not in similaridade.index:
         return "Produto não encontrado no dataset."
@@ -66,48 +73,45 @@ def manhattan(rating1, rating2):
     else:
         return -1  # Retorna -1 se não houver músicas em comum
 
-def computeNearestNeighbor(username):
-    distances = []  # Lista de tuplas (distância, nome_do_usuário)
+def recommend_by_user(username, top_k_neighbors=3, top_n_products=5):
+    """
+    Retorna produtos recomendados para um usuário usando kNN ponderado.
+    Utiliza similaridade do cosseno entre usuários.
+    """
+    if username not in df_users['name'].values:
+        return f"Usuário '{username}' não encontrado."
 
-    for user in df_users:
-        if user != username:
-            distance = manhattan(users[user], users[username])  # Calcula a distância
-            distances.append((distance, user))
+    # Cria matriz de avaliações (usuário x produto)
+    rating_matrix = df_users.pivot_table(index='name', columns='cosmetic', values='rate', fill_value=0)
 
-    distances.sort()  # Ordena pela menor distância (mais semelhante primeiro)
-    return distances
+    if username not in rating_matrix.index:
+        return f"Usuário '{username}' não possui avaliações."
 
-def recommend(username, users):
-    # Chama a função anterior para encontrar o usuário mais próximo e pega apenas o nome desse usuário.
-    nearest = computeNearestNeighbor(username, users)#[0][1]  # Nome do usuário mais próximo
-    recommendations = []  # Lista de recomendações
+    user_ratings = rating_matrix.loc[username].values.reshape(1, -1)
 
-    # Armazena as avaliações do vizinho mais próximo e do usuário atual em variáveis separadas
-    neighborRatings = users[nearest]  # Avaliações do vizinho
-    userRatings = users[username]  # Avaliações do usuário
+    # Calcula similaridade do cosseno entre o usuário e todos os outros
+    all_users = rating_matrix.index.tolist()
+    all_ratings = rating_matrix.values
+    sims = cosine_similarity(user_ratings, all_ratings)[0]  # retorna array com scores
 
-    # Para cada item avaliado pelo vizinho, verifica se o usuário ainda não avaliou.
-    # Se for o caso, adiciona esse item à lista de recomendações.
-    for artist in neighborRatings:
-        if artist not in userRatings:
-            recommendations.append((artist, neighborRatings[artist]))  # Adiciona recomendação
+    # Cria dict de similaridade ignorando ele mesmo
+    similarities = {user: sim for user, sim in zip(all_users, sims) if user != username}
 
-    # Ordena por maior pontuação do vizinho
-    return sorted(recommendations, key=lambda artistTuple: artistTuple[1], reverse=True)
+    # Top K vizinhos
+    top_neighbors = sorted(similarities.items(), key=lambda x: x[1], reverse=True)[:top_k_neighbors]
 
-# Função que monta a interface do aplicativo no Streamlit
-def recommend_app():
-    global users
-    st.title("Sistema de Recomendação Colaborativo de Cosméticos")  # Título do app
+    # Previsão ponderada
+    product_scores = {}
+    for neighbor, sim in top_neighbors:
+        neighbor_ratings = rating_matrix.loc[neighbor]
+        for product, rating in neighbor_ratings.items():
+            # Só recomenda se o usuário ainda não avaliou
+            if user_ratings[0][rating_matrix.columns.get_loc(product)] == 0 and rating > 0:
+                if product not in product_scores:
+                    product_scores[product] = 0
+                product_scores[product] += sim * rating  # pondera pelo score do cosseno
 
-    username = st.text_input("Digite o nome de usuário:")  # Campo de entrada para o nome
-    splitted_username = re.split("[.-,/\' %]", username)
-    print(splitted_username)
-    if st.button("Recomendar produtos"):  # Botão para gerar recomendação
-        if username in users["name"]:
-            recommendations = recommend(username, users["name"])  # Gera recomendações
-            st.write(f"Recomendações para {username}:")
-            for recommendation in recommendations:
-                st.write(f"{recommendation[0]} - Pontuação: {recommendation[1]}")  # Exibe recomendações
-        else:
-            st.write("Nome de usuário não encontrado. Por favor, insira um nome de usuário válido.")  # Mensagem de erro
+    # Ordena e retorna top N produtos
+    recommended = sorted(product_scores.items(), key=lambda x: x[1], reverse=True)[:top_n_products]
+    return recommended
+

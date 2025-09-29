@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from backend.models import RecommendationResponse, RecommendationRequest
 from backend.recommender import recommend_by_ingredients
+from backend.recommender import recommend_by_user
+from pydantic import BaseModel
 import sys
+import csv
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -30,4 +33,44 @@ def recommend(request: RecommendationRequest):
     # Converte DataFrame para lista de dicts para JSON
     results = results_df.to_dict(orient="records")
     
+    return {"results": results}
+
+class Avaliacao(BaseModel):
+    usuario: str
+    produto: str
+    avaliacao: int
+@app.post("/avaliar")
+def enviar_avaliacao(av: Avaliacao):
+    print(f"Recebido: usuario={av.usuario}, produto={av.produto}, avaliacao={av.avaliacao}")
+    with open(r"C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv", "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([av.usuario, av.produto, av.avaliacao])
+    return {"status": "sucesso", "mensagem": "Avaliação registrada!"}
+
+
+
+class RecommendationUserRequest(BaseModel):
+    username: str
+    top_k_neighbors: int = 3
+    top_n_products: int = 5
+
+@app.post("/recommend_user", response_model=RecommendationResponse)
+def recommend_user(request: RecommendationUserRequest):
+    """
+    Endpoint de recomendação colaborativa baseada em usuários
+    """
+    results_list = recommend_by_user(
+    username=request.username, 
+    top_k_neighbors=request.top_k_neighbors,
+    top_n_products=request.top_n_products
+)
+
+
+    # Se não houver recomendação ou usuário não encontrado
+    if isinstance(results_list, str):
+        return {"error": results_list}
+
+    # Converte lista de tuplas (produto, score) em lista de dicts
+    results = [{"name": prod, "score": score} for prod, score in results_list]
+
     return {"results": results}
