@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-import re
 from math import sqrt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -44,8 +43,16 @@ def recommend_by_ingredients(nome_produto, top_n=10):
 
     return resultado_final
 
+def filter_cosmetics(key_word):
+    filter = df_users["cosmetic"].str.contains(key_word, case=False, na=False)
+    return filter
 
-def manhattan(username):
+def filter_user(key_word):
+    filter = df_users["name"].str.contains(key_word, case=False, na=False)
+    return filter
+
+def manhattan(rating1, rating2):
+    
     distance = 0
     commonRatings = False  # Flag para saber se os dois usuários têm músicas em comum
 
