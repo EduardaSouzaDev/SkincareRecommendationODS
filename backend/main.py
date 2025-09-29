@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from backend.models import RecommendationResponse, RecommendationRequest
 from backend.recommender import recommend_by_ingredients
+from pydantic import BaseModel
 import sys
+import csv
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -31,3 +33,14 @@ def recommend(request: RecommendationRequest):
     results = results_df.to_dict(orient="records")
     
     return {"results": results}
+
+class Avaliacao(BaseModel):
+    usuario: str
+    produto: str
+    avaliacao: int
+@app.post("/avaliar")
+def enviar_avaliacao(av: Avaliacao):
+    with open("..\data\more_ava.csv", "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([av.usuario, av.produto, av.avaliacao])
+    return {"status": "sucesso", "mensagem": "Avaliação registrada!"}
