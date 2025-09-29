@@ -40,9 +40,10 @@ class Avaliacao(BaseModel):
     produto: str
     avaliacao: int
 @app.post("/avaliar")
+#C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv
 def enviar_avaliacao(av: Avaliacao):
     print(f"Recebido: usuario={av.usuario}, produto={av.produto}, avaliacao={av.avaliacao}")
-    with open(r"C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv", "a", newline="", encoding="utf-8") as f:
+    with open(r"backend/data/more_ava.csv", "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow([av.usuario, av.produto, av.avaliacao])
     return {"status": "sucesso", "mensagem": "Avaliação registrada!"}
@@ -64,8 +65,6 @@ def recommend_user(request: RecommendationUserRequest):
     top_k_neighbors=request.top_k_neighbors,
     top_n_products=request.top_n_products
 )
-
-
     # Se não houver recomendação ou usuário não encontrado
     if isinstance(results_list, str):
         return {"error": results_list}
