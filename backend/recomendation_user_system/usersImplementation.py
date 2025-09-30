@@ -63,4 +63,4 @@ def filter_items(key_word):
     filter = df_avaliation["cosmetic"].str.contains(key_word, case=False, na=False)
     #print(df_avaliation[filtro])
     return filter
-fill_csv(18)
+fill_csv()
