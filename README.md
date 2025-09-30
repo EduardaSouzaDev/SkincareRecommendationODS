@@ -65,12 +65,12 @@ Em resumo, o cosseno permite mensurar quão parecidos são dois produtos na form
  - Segue abaixo uma tabela com os valores usados para teste da acurácia. Esse cálculo foi feito em um ambiente controlado, afim de demonstrar a eficácia do código, e que ele atende com os requisitos do escopo do projeto.
 
 user  hits  recommended  relevant  accuracy  precision  recall
-0   Fatima     4            5         5       0.8        0.8    0.80
-1  Vitoria     4            5         4       0.8        0.8    1.00
-2     Alex     4            5         4       0.8        0.8    1.00
-3      Bia     2            5         2       0.4        0.4    1.00
-4   Nazare     2            5         2       0.4        0.4    1.00
-5   Sheila     3            5         4       0.6        0.6    0.75
+- 0   Fatima     4            5         5       0.8        0.8    0.80
+- 1  Vitoria     4            5         4       0.8        0.8    1.00
+- 2     Alex     4            5         4       0.8        0.8    1.00
+- 3      Bia     2            5         2       0.4        0.4    1.00
+- 4   Nazare     2            5         2       0.4        0.4    1.00
+- 5    Sheila     3            5         4       0.6        0.6    0.75
 
 Acurácia média: 63.33%
 Precisão média: 63.33%
