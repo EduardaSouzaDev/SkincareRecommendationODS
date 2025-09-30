@@ -8,7 +8,7 @@ import csv
 import os
 
 sys.stdout.reconfigure(encoding="utf-8")
-CSV_FILE = r"backend/data/more_ava.csv"
+CSV_FILE = r"data/more_ava.csv"
 CSV_HEADERS = ["user_id", "product_id", "ranking"]
 
 app = FastAPI(
@@ -44,11 +44,24 @@ class Avaliacao(BaseModel):
     avaliacao: int
 @app.post("/avaliar")
 def enviar_avaliacao(av: Avaliacao):
-    print(f"Recebido: usuario={av.usuario}, produto={av.produto}, avaliacao={av.avaliacao}")
-    with open(r"backend/data/more_ava.cs", "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow([av.usuario, av.produto, av.avaliacao])
-    return {"status": "sucesso", "mensagem": "Avaliação registrada!"}
+    nova_linha = Avaliacao.model_dump
+    try:
+        file_exists = os.path.isfile(CSV_FILE)
+        
+        with open(CSV_FILE, 'a+', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=CSV_HEADERS)
+            
+            if not file_exists:
+                writer.writeheader()
+            
+            writer.writerow(nova_linha)
+
+    except IOError as e:
+        # Se houver um erro de escrita, lançamos uma exceção HTTP
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Não foi possível salvar a avaliação. Erro de I/O: {e}"
+        )
 
 
 

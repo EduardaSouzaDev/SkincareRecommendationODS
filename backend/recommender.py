@@ -9,7 +9,7 @@ data = pd.read_csv("backend/data/cosmetic.csv")
 
 
 def load_user_data():
-    return pd.read_csv(r"C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv")
+    return pd.read_csv(r"backend\data\more_ava.csv")
 
 df_users = load_user_data()
 
