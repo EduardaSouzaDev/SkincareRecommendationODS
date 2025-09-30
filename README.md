@@ -1,6 +1,6 @@
 # 💆🏻‍♀️ Sistema de Recomendação de Skincare 🫧⋆｡˚
 
-### Equipe: Eduarda Souza, Gustavo Almaada, Rafael Santos.
+### Equipe: Eduarda Souza, Gustavo Almada, Rafael Santos.
 
 ## Objetivo do Sistema  
 O sistema tem como objetivo **recomendar produtos de skincare similares com base em seus ingredientes**.  
