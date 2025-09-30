@@ -4,17 +4,15 @@ import numpy as np
 
 # 1️⃣ Carrega o CSV
 def load_user_data():
-    return pd.read_csv(r"C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv")
+    return pd.read_csv("backend/data/more_ava.csv")
 
 df_users = load_user_data()
 # Mantém apenas as colunas relevantes
-df = df[['name', 'cosmetic', 'rate']]
+df = df_users[['name', 'cosmetic', 'rate']]
 
 # Função de recomendação colaborativa por usuário (Pearson)
 def recommend_by_user(train_df, target_user, top_k_neighbors=3, top_n_products=5):
-    # Cria matriz de avaliações
     rating_matrix = train_df.pivot_table(index='name', columns='cosmetic', values='rate', fill_value=0)
-
     if target_user not in rating_matrix.index:
         return []
 
@@ -41,14 +39,12 @@ def recommend_by_user(train_df, target_user, top_k_neighbors=3, top_n_products=5
         neighbor_ratings = rating_matrix.loc[neighbor]
         for product, rating in neighbor_ratings.items():
             if user_ratings[product] == 0 and rating > 0:
-                if product not in product_scores:
-                    product_scores[product] = 0
-                product_scores[product] += sim * rating
+                product_scores[product] = product_scores.get(product, 0) + sim * rating
 
     recommended = sorted(product_scores.items(), key=lambda x: x[1], reverse=True)[:top_n_products]
     return [p[0] for p in recommended]
 
-# 2️⃣ Avaliação de acurácia
+# 2️⃣ Avaliação de acurácia, precisão e recall
 results = []
 
 for user in df['name'].unique():
@@ -68,17 +64,25 @@ for user in df['name'].unique():
     # Gera recomendações
     recommended = recommend_by_user(train_df_full, user, top_k_neighbors=3, top_n_products=5)
 
-    # Compara com teste
-    test_positive = test_df[test_df['rate'] >= 3]['cosmetic'].tolist()  # considera 3+ como relevante
+    # Itens relevantes no teste
+    test_positive = test_df[test_df['rate'] >= 3]['cosmetic'].tolist()  # nota >=3
     hits = sum([1 for prod in recommended if prod in test_positive])
+
     total_recommended = len(recommended)
+    total_relevant = len(test_positive)
+
     accuracy = hits / total_recommended if total_recommended > 0 else 0
+    precision = hits / total_recommended if total_recommended > 0 else 0
+    recall = hits / total_relevant if total_relevant > 0 else 0
 
     results.append({
         'user': user,
         'hits': hits,
         'recommended': total_recommended,
-        'accuracy': accuracy
+        'relevant': total_relevant,
+        'accuracy': accuracy,
+        'precision': precision,
+        'recall': recall
     })
 
 # Converte em DataFrame
@@ -87,3 +91,5 @@ df_results = pd.DataFrame(results)
 # Exibe resultados
 print(df_results)
 print(f"\nAcurácia média: {df_results['accuracy'].mean():.2%}")
+print(f"Precisão média: {df_results['precision'].mean():.2%}")
+print(f"Recall médio: {df_results['recall'].mean():.2%}")
