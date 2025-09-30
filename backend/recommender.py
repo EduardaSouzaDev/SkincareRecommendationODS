@@ -5,8 +5,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 data = pd.read_csv("backend/data/cosmetic.csv")
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 
 def load_user_data():
@@ -14,12 +12,6 @@ def load_user_data():
 
 df_users = load_user_data()
 
-=======
-df_users = pd.read_csv("backend/data/more_ava.csv")
->>>>>>> parent of e130a4c (bring updates)
-=======
-df_users = pd.read_csv("backend/data/more_ava.csv")
->>>>>>> parent of e130a4c (bring updates)
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
