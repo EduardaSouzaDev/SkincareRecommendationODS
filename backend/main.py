@@ -49,8 +49,6 @@ def enviar_avaliacao(av: Avaliacao):
         writer.writerow([av.usuario, av.produto, av.avaliacao])
     return {"status": "sucesso", "mensagem": "Avaliação registrada!"}
 
-
-
 class RecommendationUserRequest(BaseModel):
     username: str
     top_k_neighbors: int = 3

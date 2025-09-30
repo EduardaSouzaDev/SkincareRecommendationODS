@@ -6,12 +6,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 data = pd.read_csv("backend/data/cosmetic.csv")
 
-
 def load_user_data():
     return pd.read_csv("backend\data\more_ava.csv")
 
 df_users = load_user_data()
-
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
