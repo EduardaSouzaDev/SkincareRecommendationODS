@@ -42,7 +42,7 @@ class Avaliacao(BaseModel):
 @app.post("/avaliar")
 def enviar_avaliacao(av: Avaliacao):
     print(f"Recebido: usuario={av.usuario}, produto={av.produto}, avaliacao={av.avaliacao}")
-    with open(r"C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv", "a", newline="", encoding="utf-8") as f:
+    with open("backend\data\more_ava.csv", "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow([av.usuario, av.produto, av.avaliacao])
     return {"status": "sucesso", "mensagem": "Avaliação registrada!"}
@@ -54,23 +54,14 @@ class RecommendationUserRequest(BaseModel):
     top_k_neighbors: int = 3
     top_n_products: int = 5
 
-@app.post("/recommend_user", response_model=RecommendationResponse)
+@app.post("/recommend_user")
 def recommend_user(request: RecommendationUserRequest):
-    """
-    Endpoint de recomendação colaborativa baseada em usuários
-    """
-    results_list = recommend_by_user(
-    username=request.username, 
-    top_k_neighbors=request.top_k_neighbors,
-    top_n_products=request.top_n_products
-)
-
-
-    # Se não houver recomendação ou usuário não encontrado
-    if isinstance(results_list, str):
-        return {"error": results_list}
-
-    # Converte lista de tuplas (produto, score) em lista de dicts
-    results = [{"name": prod, "score": score} for prod, score in results_list]
-
+    results = recommend_by_user(
+        username=request.username,
+        top_k_neighbors=request.top_k_neighbors,
+        top_n_products=request.top_n_products
+    )
+    if isinstance(results, str):
+        return {"error": results}
+    # results já é lista de dicts com name,brand,ingredients,price,score
     return {"results": results}

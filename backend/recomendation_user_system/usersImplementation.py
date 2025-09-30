@@ -5,7 +5,7 @@ import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-df_users = pd.read_csv("backend/data/usersAvaliation.csv")
+df_users = pd.read_csv("data/usersAvaliation.csv")
 df_ingredients = pd.read_csv("backend/data/cosmetic.csv")
 df_avaliation = pd.read_csv("backend/data/more_ava.csv")
 
