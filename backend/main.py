@@ -1,26 +1,13 @@
 from fastapi import FastAPI
 from backend.models import RecommendationResponse, RecommendationRequest
 from backend.recommender import recommend_by_ingredients
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 from backend.recommender import recommend_by_user
 from pydantic import BaseModel
 import sys
 import csv
-<<<<<<< HEAD
 import os
-=======
 import sys
->>>>>>> parent of e130a4c (bring updates)
-=======
->>>>>>> parent of 6be89ea (Merge branch 'main' into backend)
-=======
 import sys
->>>>>>> parent of e130a4c (bring updates)
-=======
-import sys
->>>>>>> parent of e130a4c (bring updates)
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -50,10 +37,6 @@ def recommend(request: RecommendationRequest):
     results = results_df.to_dict(orient="records")
     
     return {"results": results}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 class Avaliacao(BaseModel):
     usuario: str
     produto: str
@@ -84,9 +67,3 @@ def recommend_user(request: RecommendationUserRequest):
         return {"error": results}
     # results já é lista de dicts com name,brand,ingredients,price,score
     return {"results": results}
-=======
->>>>>>> parent of e130a4c (bring updates)
-=======
->>>>>>> parent of e130a4c (bring updates)
-=======
->>>>>>> parent of e130a4c (bring updates)
