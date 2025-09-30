@@ -73,9 +73,9 @@ Em resumo, o cosseno permite mensurar quão parecidos são dois produtos na form
 | 4 | Nazare | 2 | 5 | 2 | 0.4 | 0.4 | 1.00 |
 | 5 | Sheila | 3 | 5 | 3 | 0.6 | 0.6 | 1.00 |
 
-Acurácia média: 63.33%
-Precisão média: 63.33%
-Recall médio: 92.50%
+| Acurácia média: 63.33% |
+| Precisão média: 63.33% |
+| Recall médio: 92.50% |
 
 - Podemos obersar que a acurácia média foi de, 63%, o que julgamos um bom valor, então mais da metade das recomendações foram acertivas.
 - Tivemos um ótimo recall, que é a proporção de produtos relevantes, o valor chegou a 92%.
