@@ -1,5 +1,7 @@
 # 💆🏻‍♀️ Sistema de Recomendação de Skincare 🫧⋆｡˚
 
+### Equipe: Eduarda Souza, Gustavo Almaada, Rafael Santos.
+
 ## Objetivo do Sistema  
 O sistema tem como objetivo **recomendar produtos de skincare similares com base em seus ingredientes**.  
 Dado o nome de um produto, o sistema analisa os ingredientes cadastrados em um dataset e retorna aqueles com **maior similaridade de composição**.  
