@@ -60,3 +60,22 @@ Foi utilizada a similaridade do cosseno, pois:
  - É mais adequada que distâncias como Euclidiana, já que o objetivo é identificar proporção de interseção de ingredientes, e não diferenças absolutas.
 
 Em resumo, o cosseno permite mensurar quão parecidos são dois produtos na formulação, o que é essencial neste domínio.
+
+### 6. Cálculo e análise da acurácia.
+ - Segue abaixo uma tabela com os valores usados para teste da acurácia. Esse cálculo foi feito em um ambiente controlado, afim de demonstrar a eficácia do código, e que ele atende com os requisitos do escopo do projeto.
+
+user  hits  recommended  relevant  accuracy  precision  recall
+0   Fatima     4            5         5       0.8        0.8    0.80
+1  Vitoria     4            5         4       0.8        0.8    1.00
+2     Alex     4            5         4       0.8        0.8    1.00
+3      Bia     2            5         2       0.4        0.4    1.00
+4   Nazare     2            5         2       0.4        0.4    1.00
+5   Sheila     3            5         4       0.6        0.6    0.75
+
+Acurácia média: 63.33%
+Precisão média: 63.33%
+Recall médio: 92.50%
+
+- Podemos obersar que a acurácia média foi de, 63%, o que julgamos um bom valor, então mais da metade das recomendações foram acertivas.
+- Tivemos um ótimo recall, que é a proporção de produtos relevantes, o valor chegou a 92%.
+- E a nossa precição atigiu o valor, também de 63%, que é a proporção de produtos recomendados que foram relevantes.
