@@ -34,7 +34,7 @@ def manhattan(rating1, rating2):
 # Função que encontra o vizinho mais próximo (usuário mais parecido)
 def computeNearestNeighbor(username, users):
     distances = []  # Lista de tuplas (distância, nome_do_usuário)
-    
+
     for user in users:
         if user != username:
             distance = manhattan(users[user], users[username])  # Calcula a distância

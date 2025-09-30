@@ -9,11 +9,7 @@ data = pd.read_csv("backend/data/cosmetic.csv")
 
 
 def load_user_data():
-<<<<<<< HEAD
-    return pd.read_csv(r"backend\data\more_ava.csv")
-=======
     return pd.read_csv("backend\data\more_ava.csv")
->>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
 
 df_users = load_user_data()
 
