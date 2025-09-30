@@ -53,15 +53,13 @@ A interface abrirá automaticamente no navegador (geralmente em http://localhost
 
 ## Justificativa da Métrica de Similaridade
 
-Foi utilizada a similaridade do cosseno, pois:
+Foi utilizada a similaridade de Pearsson, pois:
 
- - Mede a proximidade angular entre vetores, desconsiderando magnitude — ideal para dados binários (presença/ausência de ingrediente).
+ - Mede a proximidade considerando o rigor das avaliações dos usuários, ignorando a diferença aboluta entre algumas notas, e sim usando de avaliações anteriores para se basear no que pode ser considerado como uma avaliação de nota alta por um usuário X e o que pode ser consideradao nota Alta para um certo usuário Y.
 
- - É amplamente utilizada em sistemas de recomendação baseados em conteúdo.
+ - É altamente eficaz em modelos de Filtragem Colaborativa Baseada em Usuário.
 
- - É mais adequada que distâncias como Euclidiana, já que o objetivo é identificar proporção de interseção de ingredientes, e não diferenças absolutas.
-
-Em resumo, o cosseno permite mensurar quão parecidos são dois produtos na formulação, o que é essencial neste domínio.
+ - É mais eficiente porque percebe o comportamento de cada usuário e usa como parte da avaliação, e para um sistema de recomendação de cosméticos é muito útil, pois cosméticos tem muito peso com a experiência do usuário e seu emocional, que pontos técnicos dos produtos avaliados.
 
 ## Cálculo e análise da acurácia.
  - Segue abaixo uma tabela com os valores usados para teste da acurácia. Esse cálculo foi feito em um ambiente controlado, afim de demonstrar a eficácia do código, e que ele atende com os requisitos do escopo do projeto.
