@@ -182,12 +182,24 @@ elif st.session_state.page == "produto":
                 st.write("Nenhuma recomendação disponível.")
             else:
                 for r in recomendados:
+                    # pular se for o produto atual (não mostrar em recomendados)
+                    if st.session_state.current_product and r["name"] == st.session_state.current_product["name"]:
+                        continue  
+
                     st.markdown(f"""
                         <div style='border:1px solid #ccc; padding:10px; border-radius:10px; margin-bottom:10px;'>
                             <h4 style='color:#FF69B4;'>{r['name']}</h4>
+                            <p><b>Marca:</b> {r['brand']}</p>
+                            <p><b>Preço:</b> {r['price']} Reais</p>
                             <p><b>Score:</b> {r['score']:.2f}</p>
                         </div>
                     """, unsafe_allow_html=True)
+
+                    if st.button(f"Ver {r['name']}", key=f"recomendado_{r['name']}"):
+                        st.session_state.current_product = r
+                        st.session_state.page = "produto"
+                        st.rerun()
+
                     
 
     # Botão para voltar à lista

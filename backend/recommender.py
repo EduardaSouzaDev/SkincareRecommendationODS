@@ -9,7 +9,11 @@ data = pd.read_csv("backend/data/cosmetic.csv")
 
 
 def load_user_data():
-    return pd.read_csv(r"C:\Users\Gustavo\Documents\SkincareRecommendationODS\backend\data\more_ava.csv")
+<<<<<<< HEAD
+    return pd.read_csv(r"backend\data\more_ava.csv")
+=======
+    return pd.read_csv("backend\data\more_ava.csv")
+>>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
 
 df_users = load_user_data()
 
@@ -73,45 +77,110 @@ def manhattan(rating1, rating2):
     else:
         return -1  # Retorna -1 se não houver músicas em comum
 
+from scipy.stats import pearsonr
+import numpy as np
+
+<<<<<<< HEAD
+
+    for user in df_users:
+        if user != username:
+            distance = manhattan(users[user], users[username])  # Calcula a distância
+            distances.append((distance, user))
+=======
 def recommend_by_user(username, top_k_neighbors=3, top_n_products=5):
     """
-    Retorna produtos recomendados para um usuário usando kNN ponderado.
-    Utiliza similaridade do cosseno entre usuários.
+    Retorna lista de dicionários:
+    [{ "name","brand","ingredients","price","score" }, ...]
+    usando **similaridade de Pearson** entre usuários.
     """
     if username not in df_users['name'].values:
         return f"Usuário '{username}' não encontrado."
+>>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
 
-    # Cria matriz de avaliações (usuário x produto)
+    # matriz usuário x produto (0 = sem avaliação)
     rating_matrix = df_users.pivot_table(index='name', columns='cosmetic', values='rate', fill_value=0)
-
     if username not in rating_matrix.index:
         return f"Usuário '{username}' não possui avaliações."
 
     user_ratings = rating_matrix.loc[username].values.reshape(1, -1)
-
-    # Calcula similaridade do cosseno entre o usuário e todos os outros
     all_users = rating_matrix.index.tolist()
-    all_ratings = rating_matrix.values
-    sims = cosine_similarity(user_ratings, all_ratings)[0]  # retorna array com scores
 
-    # Cria dict de similaridade ignorando ele mesmo
-    similarities = {user: sim for user, sim in zip(all_users, sims) if user != username}
+    # calcula similaridade Pearson com todos os outros usuários
+    similarities = {}
+    for other in all_users:
+        if other != username:
+            u = rating_matrix.loc[username].values
+            v = rating_matrix.loc[other].values
+            sim, _ = pearsonr(u, v)
+            similarities[other] = 0 if np.isnan(sim) else sim
 
-    # Top K vizinhos
+    # top K vizinhos
     top_neighbors = sorted(similarities.items(), key=lambda x: x[1], reverse=True)[:top_k_neighbors]
 
-    # Previsão ponderada
+    # previsão ponderada para produtos que o usuário ainda não avaliou
     product_scores = {}
+    cols = rating_matrix.columns
     for neighbor, sim in top_neighbors:
         neighbor_ratings = rating_matrix.loc[neighbor]
         for product, rating in neighbor_ratings.items():
-            # Só recomenda se o usuário ainda não avaliou
-            if user_ratings[0][rating_matrix.columns.get_loc(product)] == 0 and rating > 0:
-                if product not in product_scores:
-                    product_scores[product] = 0
-                product_scores[product] += sim * rating  # pondera pelo score do cosseno
+            if user_ratings[0][cols.get_loc(product)] == 0 and rating > 0:
+                weight = max(sim, 0.01)  # padding mínimo
+                product_scores[product] = product_scores.get(product, 0) + weight * rating
 
-    # Ordena e retorna top N produtos
+<<<<<<< HEAD
+# Função que monta a interface do aplicativo no Streamlit
+def recommend_app():
+    st.title("Sistema de Recomendação Colaborativo de Cosméticos")  # Título do app
+
+    username = st.text_input("Digite o nome de usuário:")  # Campo de entrada para o nome
+    #splitted_username = re.split("[.-,/\' %]", username)
+    #print(splitted_username)
+    if st.button("Recomendar produtos"):  # Botão para gerar recomendação
+        if username in users:
+            recommendations = recommend(username, users)  # Gera recomendações
+            st.write(f"Recomendações para {username}:")
+            for recommendation in recommendations:
+                st.write(f"{recommendation[0]} - Pontuação: {recommendation[1]}")  # Exibe recomendações
+=======
+    if not product_scores:
+        return []
+
+    # pega top N produtos
     recommended = sorted(product_scores.items(), key=lambda x: x[1], reverse=True)[:top_n_products]
-    return recommended
+
+    # monta resultado completo
+    recommended_full = []
+    dolar_para_real = 5.3
+    for prod_name, score in recommended:
+        row = data[data['name'] == prod_name]
+        if not row.empty:
+            row0 = row.iloc[0]
+            price_raw = row0.get('price', None)
+            if pd.notna(price_raw):
+                try:
+                    price_value = float(price_raw)
+                    price_str = f"R$ {price_value * dolar_para_real:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                except Exception:
+                    price_str = str(price_raw)
+            else:
+                price_str = "N/A"
+
+            recommended_full.append({
+                "name": row0.get('name', prod_name),
+                "brand": row0.get('brand', 'Desconhecida'),
+                "ingredients": row0.get('ingredients', ''),
+                "price": price_str,
+                "score": float(score)
+            })
+>>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
+        else:
+            recommended_full.append({
+                "name": prod_name,
+                "brand": "Desconhecida",
+                "ingredients": "",
+                "price": "N/A",
+                "score": float(score)
+            })
+
+    return recommended_full
 
