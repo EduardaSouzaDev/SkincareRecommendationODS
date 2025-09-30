@@ -5,7 +5,7 @@ import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-df_users = pd.read_csv("data/usersAvaliation.csv")
+df_users = pd.read_csv("backend/data/usersAvaliation.csv")
 df_ingredients = pd.read_csv("backend/data/cosmetic.csv")
 df_avaliation = pd.read_csv("backend/data/more_ava.csv")
 
@@ -23,35 +23,29 @@ def generate_new_ratings():
 def generate_number_of_avaliation():
     rand_num = rd.randint(MIN, 10)
 
-def fill_csv(number_of_users, min_rate=1, max_rate=5):
+def fill_csv():
     global df_avaliation
-
-    new_aval = []
-
-    for user_idx in range(number_of_users):
-        # Quantas avaliações esse usuário vai fazer (aleatório, entre 1 e 10)
-        num_ratings = np.random.randint(1, 11)
-        
-        for _ in range(num_ratings):
-            # Escolhe produto aleatório
-            product_idx = np.random.randint(0, len(df_ingredients))
-            av = {
-                "name": df_users["name"].iloc[user_idx],
-                "cosmetic": df_ingredients["name"].iloc[product_idx],
-                "rate": np.random.randint(min_rate, max_rate+1),
-                "id": user_idx
-            }
-            new_aval.append(av)
-
-    # Adiciona ao dataframe existente e remove duplicados
-    df_new = pd.DataFrame(new_aval)
-    df_avaliation = pd.concat([df_avaliation, df_new], ignore_index=True)
-    df_avaliation.drop_duplicates(inplace=True)
-
-    # Salva no CSV
-    df_avaliation.to_csv("backend/data/more_ava.csv", index=False)
-    print(f"{len(new_aval)} avaliações adicionadas com sucesso!")
-
+    
+    avaliation = []
+    
+    for i in range(MIN, numberofusers+1):
+        variant = np.random.randint(low = 1, high = 11, size = numberofusers)   
+    
+    for j in variant:
+        position = rd.randint(0, numberofusers)
+        for k in range(0, j):#faz repetir para cada uma das posições do CSV
+            id = rd.randint(COS_MIN, COS_MAX-1)
+            av = {"name" : df_users["name"][j], "cosmetic" : df_ingredients["name"][id], "rate" : rd.randint(COS_MIN, 5), "id" : position} #ok
+            avaliation.append(av)
+            print(avaliation)
+            add_ava = pd.DataFrame(avaliation)
+            df_avaliation = pd.concat([df_avaliation, add_ava], ignore_index=True)
+        print(df_avaliation)
+        df_avaliation = df_avaliation.drop_duplicates(inplace=False)
+        df_avaliation.to_csv("backend/data/more_ava.csv", index=False)
+        avaliation = []
+        add_ava = add_ava[0:0]  
+    
 
 '''def update_id():
     for i in range(MIN, len(df_users)):
@@ -63,4 +57,3 @@ def filter_items(key_word):
     filter = df_avaliation["cosmetic"].str.contains(key_word, case=False, na=False)
     #print(df_avaliation[filtro])
     return filter
-fill_csv(18)

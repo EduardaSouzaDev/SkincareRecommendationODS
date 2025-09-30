@@ -1,11 +1,11 @@
 import pandas as pd
-import numpy as np
 import streamlit as st
 from math import sqrt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 data = pd.read_csv("backend/data/cosmetic.csv")
+<<<<<<< HEAD
 
 
 def load_user_data():
@@ -17,6 +17,9 @@ def load_user_data():
 
 df_users = load_user_data()
 
+=======
+df_users = pd.read_csv("backend/data/more_ava.csv")
+>>>>>>> parent of e130a4c (bring updates)
 
 # Vetorizacao
 vectorizer = CountVectorizer(binary=True, token_pattern=r'[^,]+')
@@ -26,7 +29,7 @@ X = vectorizer.fit_transform(data['ingredients'].fillna(""))
 similaridade = cosine_similarity(X)
 similaridade = pd.DataFrame(similaridade, index=data['name'], columns=data['name'])
 
-def recommend_by_ingredients(nome_produto, top_n=3):
+def recommend_by_ingredients(nome_produto, top_n=10):
 
     if nome_produto not in similaridade.index:
         return "Produto não encontrado no dataset."
@@ -77,57 +80,36 @@ def manhattan(rating1, rating2):
     else:
         return -1  # Retorna -1 se não houver músicas em comum
 
-from scipy.stats import pearsonr
-import numpy as np
+def computeNearestNeighbor(username):
+    distances = []  # Lista de tuplas (distância, nome_do_usuário)
 
-<<<<<<< HEAD
 
     for user in df_users:
         if user != username:
             distance = manhattan(users[user], users[username])  # Calcula a distância
             distances.append((distance, user))
-=======
-def recommend_by_user(username, top_k_neighbors=3, top_n_products=5):
-    """
-    Retorna lista de dicionários:
-    [{ "name","brand","ingredients","price","score" }, ...]
-    usando **similaridade de Pearson** entre usuários.
-    """
-    if username not in df_users['name'].values:
-        return f"Usuário '{username}' não encontrado."
->>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
 
-    # matriz usuário x produto (0 = sem avaliação)
-    rating_matrix = df_users.pivot_table(index='name', columns='cosmetic', values='rate', fill_value=0)
-    if username not in rating_matrix.index:
-        return f"Usuário '{username}' não possui avaliações."
+    distances.sort()  # Ordena pela menor distância (mais semelhante primeiro)
+    return distances
 
-    user_ratings = rating_matrix.loc[username].values.reshape(1, -1)
-    all_users = rating_matrix.index.tolist()
+def recommend(username, users):
+    # Chama a função anterior para encontrar o usuário mais próximo e pega apenas o nome desse usuário.
+    nearest = computeNearestNeighbor(username, users)#[0][1]  # Nome do usuário mais próximo
+    recommendations = []  # Lista de recomendações
 
-    # calcula similaridade Pearson com todos os outros usuários
-    similarities = {}
-    for other in all_users:
-        if other != username:
-            u = rating_matrix.loc[username].values
-            v = rating_matrix.loc[other].values
-            sim, _ = pearsonr(u, v)
-            similarities[other] = 0 if np.isnan(sim) else sim
+    # Armazena as avaliações do vizinho mais próximo e do usuário atual em variáveis separadas
+    neighborRatings = users[nearest]  # Avaliações do vizinho
+    userRatings = users[username]  # Avaliações do usuário
 
-    # top K vizinhos
-    top_neighbors = sorted(similarities.items(), key=lambda x: x[1], reverse=True)[:top_k_neighbors]
+    # Para cada item avaliado pelo vizinho, verifica se o usuário ainda não avaliou.
+    # Se for o caso, adiciona esse item à lista de recomendações.
+    for artist in neighborRatings:
+        if artist not in userRatings:
+            recommendations.append((artist, neighborRatings[artist]))  # Adiciona recomendação
 
-    # previsão ponderada para produtos que o usuário ainda não avaliou
-    product_scores = {}
-    cols = rating_matrix.columns
-    for neighbor, sim in top_neighbors:
-        neighbor_ratings = rating_matrix.loc[neighbor]
-        for product, rating in neighbor_ratings.items():
-            if user_ratings[0][cols.get_loc(product)] == 0 and rating > 0:
-                weight = max(sim, 0.01)  # padding mínimo
-                product_scores[product] = product_scores.get(product, 0) + weight * rating
+    # Ordena por maior pontuação do vizinho
+    return sorted(recommendations, key=lambda artistTuple: artistTuple[1], reverse=True)
 
-<<<<<<< HEAD
 # Função que monta a interface do aplicativo no Streamlit
 def recommend_app():
     st.title("Sistema de Recomendação Colaborativo de Cosméticos")  # Título do app
@@ -141,46 +123,5 @@ def recommend_app():
             st.write(f"Recomendações para {username}:")
             for recommendation in recommendations:
                 st.write(f"{recommendation[0]} - Pontuação: {recommendation[1]}")  # Exibe recomendações
-=======
-    if not product_scores:
-        return []
-
-    # pega top N produtos
-    recommended = sorted(product_scores.items(), key=lambda x: x[1], reverse=True)[:top_n_products]
-
-    # monta resultado completo
-    recommended_full = []
-    dolar_para_real = 5.3
-    for prod_name, score in recommended:
-        row = data[data['name'] == prod_name]
-        if not row.empty:
-            row0 = row.iloc[0]
-            price_raw = row0.get('price', None)
-            if pd.notna(price_raw):
-                try:
-                    price_value = float(price_raw)
-                    price_str = f"R$ {price_value * dolar_para_real:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-                except Exception:
-                    price_str = str(price_raw)
-            else:
-                price_str = "N/A"
-
-            recommended_full.append({
-                "name": row0.get('name', prod_name),
-                "brand": row0.get('brand', 'Desconhecida'),
-                "ingredients": row0.get('ingredients', ''),
-                "price": price_str,
-                "score": float(score)
-            })
->>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
         else:
-            recommended_full.append({
-                "name": prod_name,
-                "brand": "Desconhecida",
-                "ingredients": "",
-                "price": "N/A",
-                "score": float(score)
-            })
-
-    return recommended_full
-
+            st.write("Nome de usuário não encontrado. Por favor, insira um nome de usuário válido.")  # Mensagem de erro

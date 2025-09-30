@@ -1,11 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from backend.models import RecommendationResponse, RecommendationRequest
 from backend.recommender import recommend_by_ingredients
+<<<<<<< HEAD
 from backend.recommender import recommend_by_user
 from pydantic import BaseModel, Field
 import sys
 import csv
 import os
+=======
+import sys
+>>>>>>> parent of e130a4c (bring updates)
 
 sys.stdout.reconfigure(encoding="utf-8")
 CSV_FILE = r"backend/data/more_ava.csv"
@@ -37,6 +41,7 @@ def recommend(request: RecommendationRequest):
     results = results_df.to_dict(orient="records")
     
     return {"results": results}
+<<<<<<< HEAD
 
 class Avaliacao(BaseModel):
     usuario: str
@@ -90,3 +95,5 @@ def recommend_user(request: RecommendationUserRequest):
     # results já é lista de dicts com name,brand,ingredients,price,score
 >>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
     return {"results": results}
+=======
+>>>>>>> parent of e130a4c (bring updates)
