@@ -53,7 +53,7 @@ A interface abrirá automaticamente no navegador (geralmente em http://localhost
 
 ## Justificativa da Métrica de Similaridade
 
-Foi utilizada a similaridade de Pearsson, pois:
+Foi utilizada a similaridade de Pearson, pois:
 
  - Mede a proximidade considerando o rigor das avaliações dos usuários, ignorando a diferença aboluta entre algumas notas, e sim usando de avaliações anteriores para se basear no que pode ser considerado como uma avaliação de nota alta por um usuário X e o que pode ser consideradao nota Alta para um certo usuário Y.
 
