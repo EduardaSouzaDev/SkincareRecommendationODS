@@ -4,7 +4,7 @@ import numpy as np
 
 # 1️⃣ Carrega o CSV
 def load_user_data():
-    return pd.read_csv("data/more_ava_simulated.csv")
+    return pd.read_csv("backend/data/more_ava.csv")
 
 df_users = load_user_data()
 # Mantém apenas as colunas relevantes

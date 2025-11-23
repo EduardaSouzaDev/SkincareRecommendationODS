@@ -9,7 +9,11 @@ data = pd.read_csv("backend/data/cosmetic.csv")
 
 
 def load_user_data():
+<<<<<<< HEAD
+    return pd.read_csv(r"backend\data\more_ava.csv")
+=======
     return pd.read_csv("backend\data\more_ava.csv")
+>>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
 
 df_users = load_user_data()
 
@@ -76,6 +80,13 @@ def manhattan(rating1, rating2):
 from scipy.stats import pearsonr
 import numpy as np
 
+<<<<<<< HEAD
+
+    for user in df_users:
+        if user != username:
+            distance = manhattan(users[user], users[username])  # Calcula a distância
+            distances.append((distance, user))
+=======
 def recommend_by_user(username, top_k_neighbors=3, top_n_products=5):
     """
     Retorna lista de dicionários:
@@ -84,6 +95,7 @@ def recommend_by_user(username, top_k_neighbors=3, top_n_products=5):
     """
     if username not in df_users['name'].values:
         return f"Usuário '{username}' não encontrado."
+>>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
 
     # matriz usuário x produto (0 = sem avaliação)
     rating_matrix = df_users.pivot_table(index='name', columns='cosmetic', values='rate', fill_value=0)
@@ -115,6 +127,21 @@ def recommend_by_user(username, top_k_neighbors=3, top_n_products=5):
                 weight = max(sim, 0.01)  # padding mínimo
                 product_scores[product] = product_scores.get(product, 0) + weight * rating
 
+<<<<<<< HEAD
+# Função que monta a interface do aplicativo no Streamlit
+def recommend_app():
+    st.title("Sistema de Recomendação Colaborativo de Cosméticos")  # Título do app
+
+    username = st.text_input("Digite o nome de usuário:")  # Campo de entrada para o nome
+    #splitted_username = re.split("[.-,/\' %]", username)
+    #print(splitted_username)
+    if st.button("Recomendar produtos"):  # Botão para gerar recomendação
+        if username in users:
+            recommendations = recommend(username, users)  # Gera recomendações
+            st.write(f"Recomendações para {username}:")
+            for recommendation in recommendations:
+                st.write(f"{recommendation[0]} - Pontuação: {recommendation[1]}")  # Exibe recomendações
+=======
     if not product_scores:
         return []
 
@@ -145,6 +172,7 @@ def recommend_by_user(username, top_k_neighbors=3, top_n_products=5):
                 "price": price_str,
                 "score": float(score)
             })
+>>>>>>> 9e5e0999a6d3deb99f65b5b88aa56987936a4eaa
         else:
             recommended_full.append({
                 "name": prod_name,
